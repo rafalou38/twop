@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
 import { Counter } from "./Counter";
+import { StatusProvider } from "./status";
 import { CounterOptions } from "./types";
 
 let counter: Counter;
@@ -21,6 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
       .get("tickInterval", 1000),
   };
 
+  const status = new StatusProvider(context);
   counter = new Counter(context.workspaceState, options);
 
   let timeWastedCommand = vscode.commands.registerCommand(
@@ -36,7 +38,9 @@ export function activate(context: vscode.ExtensionContext) {
       );
     }
   );
+
   context.subscriptions.push(timeWastedCommand);
+  context.subscriptions.push(status.item);
 }
 
 // this method is called when your extension is deactivated

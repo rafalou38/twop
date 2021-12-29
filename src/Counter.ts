@@ -1,12 +1,13 @@
 import * as vscode from "vscode";
-import { CounterOptions } from "./types";
+import { StatusProvider } from "./status";
+import { CounterOptions, Time } from "./types";
 
 export class Counter {
   private idleTimeout: NodeJS.Timeout | null = null;
   private tickInterval: NodeJS.Timeout | null = null;
   private lastTick = 0;
   private totalTime = 0;
-  private saved = false;
+  private isIdle = true;
   private storage: vscode.Memento;
   private options: CounterOptions;
   constructor(storage: vscode.Memento, options: CounterOptions) {
@@ -34,7 +35,10 @@ export class Counter {
 
   // Called when the user does an action: not idle
   private active() {
+    if (this.isIdle)
+      StatusProvider.instance.showTimeActive(this.getTimeWasted());
     if (this.idleTimeout) clearTimeout(this.idleTimeout);
+    this.isIdle = false;
     this.idleTimeout = setTimeout(
       this.idle.bind(this),
       this.options.idleTime * 1000
@@ -47,12 +51,19 @@ export class Counter {
     );
   }
   private tick() {
-    if (this.lastTick) this.totalTime += Date.now() - this.lastTick;
+    if (this.lastTick) {
+      this.totalTime += Date.now() - this.lastTick;
+      StatusProvider.instance.showTimeActive(this.getTimeWasted());
+    }
     this.lastTick = Date.now();
   }
   private async idle() {
+    if (this.isIdle) return;
     // Save time
-    this.save();
+    await this.save();
+    this.isIdle = true;
+
+    StatusProvider.instance.showTimeIdle(this.getTimeWasted());
 
     this.lastTick = 0;
     if (this.tickInterval) clearInterval(this.tickInterval);
@@ -62,14 +73,10 @@ export class Counter {
   }
 
   public save() {
-    return this.storage.update("timeWasted", this.totalTime);
+    // StatusProvider.instance.showSaving();
+    if (!this.isIdle) return this.storage.update("timeWasted", this.totalTime);
   }
-  public getTimeWasted(): {
-    d: number;
-    h: number;
-    m: number;
-    s: number;
-  } {
+  public getTimeWasted(): Time {
     const d = Math.floor(this.totalTime / 1000 / 60 / 60 / 24);
     const h = Math.floor(this.totalTime / 1000 / 60 / 60) % 24;
     const m = Math.floor(this.totalTime / 1000 / 60) % 60;
