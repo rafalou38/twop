@@ -2,7 +2,7 @@
 	"name": "twop",
 	"displayName": "Time wasted on this Project",
 	"description": "Count the active time you wasted on every project.",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"engines": {
 		"vscode": "^1.63.0"
 	},
