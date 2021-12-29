@@ -1,6 +1,6 @@
 {
-  "name": "twop",
-	"displayName": "",
+	"name": "twop",
+	"displayName": "Time wasted on this Project",
 	"description": "Count the active time you wasted on every project.",
 	"version": "0.0.1",
 	"engines": {
@@ -10,16 +10,36 @@
 		"Other"
 	],
 	"activationEvents": [
-        "onCommand:twop.helloWorld"
+		"*"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "twop.helloWorld",
-				"title": "Hello World"
+				"command": "twop.timeWasted",
+				"title": "Time wasted here"
 			}
-		]
+		],
+		"configuration": {
+			"title": "Time Wasted",
+			"properties": {
+				"twop.idleTime": {
+					"type": "integer",
+					"default": 10,
+					"description": "The amount of time in seconds before being considered idle and stopping the timer."
+				},
+				"twop.saveInterval": {
+					"type": "integer",
+					"default": 10000,
+					"description": "The amount of time in milliseconds between each save of the time."
+				},
+				"twop.tickInterval": {
+					"type": "integer",
+					"default": 1000,
+					"description": "The amount of time in milliseconds between each count tick."
+				}
+			}
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "yarn run package",

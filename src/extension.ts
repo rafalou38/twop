@@ -1,26 +1,45 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
+import { Counter } from "./Counter";
+import { CounterOptions } from "./types";
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
+let counter: Counter;
+
 export function activate(context: vscode.ExtensionContext) {
-	
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "twop" is now active!');
+  if (!vscode.workspace.workspaceFolders) return;
+  // load settings
+  const options: CounterOptions = {
+    idleTime: vscode.workspace
+      .getConfiguration("twop", vscode.workspace.workspaceFolders[0])
+      .get("idleTime", 10),
+    saveInterval: vscode.workspace
+      .getConfiguration("twop")
+      .get("saveInterval", 10000),
+    tickInterval: vscode.workspace
+      .getConfiguration("twop")
+      .get("tickInterval", 1000),
+  };
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('twop.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from !');
-	});
+  counter = new Counter(context.workspaceState, options);
 
-	context.subscriptions.push(disposable);
+  let timeWastedCommand = vscode.commands.registerCommand(
+    "twop.timeWasted",
+    () => {
+      const wasted = counter.getTimeWasted();
+      vscode.window.showInformationMessage(
+        `Time wasted on project ${vscode.workspace.name || "unknown"}`,
+        {
+          modal: true,
+          detail: `${wasted.d} days, ${wasted.h} hours, ${wasted.m} minutes, ${wasted.s} seconds`,
+        }
+      );
+    }
+  );
+  context.subscriptions.push(timeWastedCommand);
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() {
+  if (counter) counter.save();
+}
