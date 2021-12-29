@@ -3,6 +3,7 @@
 	"displayName": "Time wasted on this Project",
 	"description": "Count the active time you wasted on every project.",
 	"version": "1.0.0",
+	"publisher": "rafaelmartinez",
 	"author": {
 		"name": "Rafael Martinez",
 		"email": "rafael.martinezcalvo@orange.fr"
