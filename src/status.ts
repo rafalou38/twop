@@ -22,7 +22,6 @@ export class StatusProvider {
     if (time.m || text) text += `${time.m}m `;
     if (time.s || text) text += `${time.s}s `;
     this.item.text = "$(flame) " + text;
-    this.item.backgroundColor = "green";
   }
   public showTimeIdle(time: Time) {
     let text = "";
@@ -31,6 +30,5 @@ export class StatusProvider {
     if (time.m || text) text += `${time.m}m `;
     if (time.s || text) text += `${time.s}s `;
     this.item.text = "$(squirrel) " + text;
-    this.item.backgroundColor = "yellow";
   }
 }
