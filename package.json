@@ -2,7 +2,7 @@
 	"name": "twop",
 	"displayName": "Time wasted on this Project",
 	"description": "Count the active time you wasted on every project.",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"publisher": "rafaelmartinez",
 	"icon": "logo.png",
 	"author": {
