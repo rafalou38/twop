@@ -3,7 +3,7 @@
 import App from "../components/trackedOverview.svelte";
 
 const app = new App({
-  target: document.body,
+  target: document.querySelector("#root") || document.body,
   props: {},
 });
 
