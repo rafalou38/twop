@@ -2,6 +2,13 @@
 // @ts-ignore
 import App from "../components/trackedOverview.svelte";
 
+import {
+  provideVSCodeDesignSystem,
+  vsCodeButton,
+} from "@vscode/webview-ui-toolkit";
+
+provideVSCodeDesignSystem().register(vsCodeButton());
+
 const app = new App({
   target: document.querySelector("#root") || document.body,
   props: {},

@@ -4,10 +4,14 @@ import resolve from "@rollup/plugin-node-resolve";
 // import html2 from "rollup-plugin-html2";
 import svelte from "rollup-plugin-svelte";
 // import serve from "rollup-plugin-serve";
-import postcss from "rollup-plugin-postcss";
 // import { terser } from "rollup-plugin-terser";
 // import livereload from "rollup-plugin-livereload";
 import sveltePreprocessor from "svelte-preprocess";
+
+// STYLES
+import postcss from "rollup-plugin-postcss";
+import tailwindcss from "tailwindcss";
+
 import path from "path";
 import { readdirSync } from "fs";
 
@@ -25,6 +29,7 @@ const plugins = [
   }),
   postcss({
     extract: true,
+    plugins: [tailwindcss()],
   }),
   typescript({
     tsconfig: "./webviews/tsconfig.json",
