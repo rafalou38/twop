@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { getProjects } from "../db/Project";
 import { getNonce } from "../utils";
 
 export class TrackedOverviewPanel {
@@ -12,6 +13,7 @@ export class TrackedOverviewPanel {
   private readonly _panel: vscode.WebviewPanel;
   private readonly _extensionUri: vscode.Uri;
   private _disposables: vscode.Disposable[] = [];
+  static ctx: vscode.ExtensionContext;
 
   public static createOrShow(extensionUri: vscode.Uri) {
     const column = vscode.window.activeTextEditor?.viewColumn;
@@ -98,12 +100,12 @@ export class TrackedOverviewPanel {
     }
   }
 
-  private _update() {
+  private async _update() {
     const webview = this._panel.webview;
-    this._panel.webview.html = this._getHtmlForWebview(webview);
+    this._panel.webview.html = await this._getHtmlForWebview(webview);
   }
 
-  private _getHtmlForWebview(webview: vscode.Webview) {
+  private async _getHtmlForWebview(webview: vscode.Webview) {
     // And the uri we use to load this script in the webview
     const scriptUri = webview.asWebviewUri(
       vscode.Uri.joinPath(
@@ -125,6 +127,8 @@ export class TrackedOverviewPanel {
     // Use a nonce to only allow specific scripts to be run
     const nonce = getNonce();
 
+    const projects = await getProjects(TrackedOverviewPanel.ctx);
+
     return `<!DOCTYPE html>
 			<html lang="en">
 			<head>
@@ -133,10 +137,13 @@ export class TrackedOverviewPanel {
 					Use a content security policy to only allow loading images from https or from our extension directory,
 					and only allow scripts that have a specific nonce.
 				-->
-				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src *;unsafe-inline; img-src ${webview.cspSource} https:; script-src 'nonce-${nonce}';">
+				
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
 				<script defer nonce="${nonce}" src="${scriptUri}"></script>
         <link rel="stylesheet" nonce="${nonce}" href="${styleUri}">
+        <script>
+          const projectsJSON = \`${JSON.stringify(projects)}\`
+        </script>
 			</head>
 			<body id="root">
         

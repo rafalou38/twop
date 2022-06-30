@@ -1,6 +1,6 @@
 /// <reference path="../../node_modules/svelte/types/runtime/index.d.ts" />
 // @ts-ignore
-import App from "../components/trackedOverview.svelte";
+import App from "../components/trackedOverview/trackedOverview.svelte";
 
 import {
   provideVSCodeDesignSystem,

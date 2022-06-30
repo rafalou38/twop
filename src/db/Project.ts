@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import Datastore from "nedb";
 import path from "path";
 import { rejects } from "assert";
+import { ISession } from "./Session";
 
 export interface IProject {
   name: string;
@@ -76,4 +77,36 @@ export async function getLocalDBpath(ctx: vscode.ExtensionContext) {
   }
 
   return localDBpath;
+}
+
+export async function getProjects(ctx: vscode.ExtensionContext) {
+  if (!(await loadDB(ctx))) return null;
+
+  const projects = await new Promise<IProject[]>((res, rej) => {
+    db?.find({}, (err: Error | null, docs: IProject[]) => {
+      if (err) return rej(err);
+      res(docs);
+    });
+  });
+
+  return Promise.all(
+    projects.map(async (project) => {
+      const localDB = new Datastore({
+        filename: project.db,
+      });
+      await new Promise((resolve) => localDB.loadDatabase(resolve));
+
+      const sessions = await new Promise<ISession[]>((res, rej) => {
+        localDB?.find({}, (err: Error | null, docs: ISession[]) => {
+          if (err) return rej(err);
+          res(docs);
+        });
+      });
+
+      return {
+        project,
+        sessions,
+      };
+    })
+  );
 }

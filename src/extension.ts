@@ -2,12 +2,15 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
 import { Counter } from "./Counter";
+import { getProjects } from "./db/Project";
 import { TrackedOverviewPanel } from "./panels/trackedOverviewPanel";
 import { StatusProvider } from "./status";
 import { CounterOptions } from "./types";
 
 export function activate(context: vscode.ExtensionContext) {
   if (!vscode.workspace.workspaceFolders) return;
+
+  TrackedOverviewPanel.ctx = context;
 
   // load settings
   const options: CounterOptions = {
@@ -37,6 +40,7 @@ export function activate(context: vscode.ExtensionContext) {
       //   }
       // );
       TrackedOverviewPanel.createOrShow(context.extensionUri);
+      // getProjects(context).then(console.log);
     }
   );
 

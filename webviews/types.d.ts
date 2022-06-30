@@ -15,3 +15,5 @@ declare interface WebviewApi {
 declare function acquireVsCodeApi(): WebviewApi;
 
 declare module "*.svg";
+
+declare const projectsJSON: string;
