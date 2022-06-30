@@ -31,4 +31,7 @@ export class StatusProvider {
     if (time.s || text) text += `${time.s}s `;
     this.item.text = "$(squirrel) " + text;
   }
+  showError() {
+    this.item.text = "$(squirrel) error";
+  }
 }

@@ -7,3 +7,7 @@ table content:
     - hide
     - open in new window
     - show stats *fold?*
+
+[ ] get needed information
+[ ] communicate the info to the webview
+[ ] implement the webview ui

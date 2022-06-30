@@ -6,10 +6,9 @@ import { TrackedOverviewPanel } from "./panels/trackedOverviewPanel";
 import { StatusProvider } from "./status";
 import { CounterOptions } from "./types";
 
-let counter: Counter;
-
 export function activate(context: vscode.ExtensionContext) {
   if (!vscode.workspace.workspaceFolders) return;
+
   // load settings
   const options: CounterOptions = {
     idleTime: vscode.workspace
@@ -24,12 +23,12 @@ export function activate(context: vscode.ExtensionContext) {
   };
 
   const status = new StatusProvider(context);
-  counter = new Counter(context.workspaceState, options);
+  const counter = new Counter(context, options);
 
   let timeWastedCommand = vscode.commands.registerCommand(
     "twop.timeWasted",
     () => {
-      const wasted = counter.getTimeWasted();
+      // const wasted = counter.getTimeWasted();
       // vscode.window.showInformationMessage(
       //   `Time wasted on project ${vscode.workspace.name || "unknown"}`,
       //   {
@@ -46,6 +45,4 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {
-  if (counter) counter.save();
-}
+export function deactivate() {}
