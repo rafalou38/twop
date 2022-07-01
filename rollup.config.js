@@ -5,7 +5,7 @@ import resolve from "@rollup/plugin-node-resolve";
 import svelte from "rollup-plugin-svelte";
 // import serve from "rollup-plugin-serve";
 // import { terser } from "rollup-plugin-terser";
-// import livereload from "rollup-plugin-livereload";
+import livereload from "rollup-plugin-livereload";
 import sveltePreprocessor from "svelte-preprocess";
 
 // STYLES
@@ -16,7 +16,6 @@ import path from "path";
 import { readdirSync } from "fs";
 
 const isDevelopment = process.env.NODE_ENV === "development";
-
 const plugins = [
   svelte({
     // dev: isDevelopment,
@@ -42,13 +41,13 @@ const plugins = [
   // }),
 ];
 if (isDevelopment) {
-  // plugins.push(
-  //   serve({
-  //     contentBase: "./dist",
-  //     open: false,
-  //   }),
-  //   livereload({ watch: "./dist" })
-  // );
+  plugins.push(
+    // serve({
+    //   contentBase: "./dist",
+    //   open: false,
+    // }),
+    livereload({ watch: "./dist" })
+  );
 } else {
   // plugins.push(terser({ sourcemap: true }));
 }
