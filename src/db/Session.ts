@@ -8,6 +8,8 @@ export interface ISession {
   timestamp: number;
   // Time spent for that session in seconds
   duration: number;
+
+  _id?: string;
 }
 
 let localDB: Datastore<ISession> | null = null;

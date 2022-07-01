@@ -128,6 +128,10 @@ export class TrackedOverviewPanel {
     const nonce = getNonce();
 
     const projects = await getProjects(TrackedOverviewPanel.ctx);
+    const currentProjectID = projects?.find(
+      (p) =>
+        p.project.path === vscode.workspace.workspaceFolders?.[0].uri.fsPath
+    )?.project._id;
 
     return `<!DOCTYPE html>
 			<html lang="en">
@@ -143,6 +147,7 @@ export class TrackedOverviewPanel {
         <link rel="stylesheet" nonce="${nonce}" href="${styleUri}">
         <script>
           const projectsJSON = \`${JSON.stringify(projects)}\`
+          const currentProjectIDbase = "${currentProjectID}"
         </script>
 			</head>
 			<body id="root">

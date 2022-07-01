@@ -17,3 +17,4 @@ declare function acquireVsCodeApi(): WebviewApi;
 declare module "*.svg";
 
 declare const projectsJSON: string;
+declare const currentProjectIDbase: string;

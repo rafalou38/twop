@@ -12,6 +12,8 @@ export interface IProject {
   db: string;
   // First time that project/workspace was opened
   timestamp: number;
+
+  _id?: string;
 }
 
 let db: Datastore<IProject> | null = null;
