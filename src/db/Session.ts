@@ -27,6 +27,15 @@ export async function addSECtoCurrentSession(
       filename: dbPath,
     });
     await new Promise((resolve) => localDB!.loadDatabase(resolve));
+
+    // Migrate old times
+    const oldTime = ctx.workspaceState.get("timeWasted");
+    if (oldTime) {
+      console.log("TWOP: migrating", oldTime, "miliseconds");
+      ctx.workspaceState.update("timeWasted", null);
+
+      addSECtoCurrentSession(ctx, oldTime as number);
+    }
   }
 
   const timestamp = new Date();
