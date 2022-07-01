@@ -1,9 +1,14 @@
-# Change Log
+## [1.0.0]
 
-All notable changes to the "twop" extension will be documented in this file.
+Initial release
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+## [2.0.0]
 
-## [Unreleased]
-
-- Initial release
+- Bottom counter now resets everyday
+- New counter system
+    - fix huge counter increases if computer put in sleep mode between two ticks
+    - Stored in a in-memory persistent local database
+- Clicking on it opens the overview webview with
+    - Project stats
+    - Time spent working on that project
+    - List of the other projects
