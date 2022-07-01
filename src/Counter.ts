@@ -1,22 +1,23 @@
 import * as vscode from "vscode";
+import { addSECtoCurrentSession } from "./db/Session";
 import { StatusProvider } from "./status";
 import { CounterOptions, Time } from "./types";
 
 export class Counter {
+  private ctx: vscode.ExtensionContext;
+  private options: CounterOptions;
+
   private idleTimeout: NodeJS.Timeout | null = null;
   private tickInterval: NodeJS.Timeout | null = null;
-  private lastTick = 0;
+
   private totalTime = 0;
+
+  private lastTick = 0;
   private isIdle = true;
-  private storage: vscode.Memento;
-  private options: CounterOptions;
-  constructor(storage: vscode.Memento, options: CounterOptions) {
-    this.storage = storage;
-    // Load saved time
-    const savedTime = this.storage.get("timeWasted", 0);
-    this.totalTime = savedTime;
+
+  constructor(ctx: vscode.ExtensionContext, options: CounterOptions) {
     this.options = options;
-    setInterval(this.save.bind(this), options.saveInterval);
+    this.ctx = ctx;
 
     // Listen for changes to the active editor
     vscode.workspace.onDidChangeTextDocument(this.active.bind(this));
@@ -35,14 +36,18 @@ export class Counter {
 
   // Called when the user does an action: not idle
   private active() {
+    // user was idle
     if (this.isIdle)
       StatusProvider.instance.showTimeActive(this.getTimeWasted());
+
+    // Reset idle timeout
     if (this.idleTimeout) clearTimeout(this.idleTimeout);
-    this.isIdle = false;
     this.idleTimeout = setTimeout(
       this.idle.bind(this),
       this.options.idleTime * 1000
     );
+
+    this.isIdle = false;
 
     if (this.tickInterval) return;
     this.tickInterval = setInterval(
@@ -50,21 +55,32 @@ export class Counter {
       this.options.tickInterval
     );
   }
-  private tick() {
+
+  private async tick() {
     if (this.lastTick) {
-      this.totalTime += Date.now() - this.lastTick;
-      StatusProvider.instance.showTimeActive(this.getTimeWasted());
+      // Min for if the computer is suspended between two ticks that would resolve in a tickDuration of many hours
+      const tickDuration = Math.min(
+        Date.now() - this.lastTick,
+        this.options.tickInterval * 2
+      );
+      let result = await addSECtoCurrentSession(this.ctx, tickDuration);
+      if (result) {
+        this.totalTime = result;
+        StatusProvider.instance.showTimeActive(this.getTimeWasted());
+      } else {
+        StatusProvider.instance.showError();
+      }
     }
     this.lastTick = Date.now();
   }
+
   private async idle() {
     if (this.isIdle) return;
-    // Save time
-    await this.save();
     this.isIdle = true;
 
     StatusProvider.instance.showTimeIdle(this.getTimeWasted());
 
+    // Stop timeouts and intervals
     this.lastTick = 0;
     if (this.tickInterval) clearInterval(this.tickInterval);
     this.tickInterval = null;
@@ -72,10 +88,6 @@ export class Counter {
     this.idleTimeout = null;
   }
 
-  public save() {
-    // StatusProvider.instance.showSaving();
-    if (!this.isIdle) return this.storage.update("timeWasted", this.totalTime);
-  }
   public getTimeWasted(): Time {
     const d = Math.floor(this.totalTime / 1000 / 60 / 60 / 24);
     const h = Math.floor(this.totalTime / 1000 / 60 / 60) % 24;
