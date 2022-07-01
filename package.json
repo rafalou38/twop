@@ -2,7 +2,7 @@
 	"name": "twop",
 	"displayName": "Time wasted on this Project",
 	"description": "Count the active time you wasted on every project.",
-	"version": "1.1.0",
+	"version": "2.0.0",
 	"publisher": "rafaelmartinez",
 	"icon": "logo.png",
 	"author": {
@@ -37,11 +37,6 @@
 					"type": "integer",
 					"default": 10,
 					"description": "The amount of time in seconds before being considered idle and stopping the timer."
-				},
-				"twop.saveInterval": {
-					"type": "integer",
-					"default": 10000,
-					"description": "The amount of time in milliseconds between each save of the time."
 				},
 				"twop.tickInterval": {
 					"type": "integer",

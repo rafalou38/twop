@@ -17,9 +17,6 @@ export function activate(context: vscode.ExtensionContext) {
     idleTime: vscode.workspace
       .getConfiguration("twop", vscode.workspace.workspaceFolders[0])
       .get("idleTime", 10),
-    saveInterval: vscode.workspace
-      .getConfiguration("twop")
-      .get("saveInterval", 10000),
     tickInterval: vscode.workspace
       .getConfiguration("twop")
       .get("tickInterval", 1000),
