@@ -24,7 +24,7 @@ If you click on the statusbar item a webview wil open with a list of all your pr
 ### Status item:
 ![status item](images/status-item.gif)
 
-### Time wasted modal:
+### Project overview panel:
 ![status item](images/popup.gif)
 
 
