@@ -4,6 +4,7 @@
 
   import "../base.css";
   import SessionsGraph from "./SessionsGraph.svelte";
+  import Projects from "./Projects.svelte";
 </script>
 
 <h1 class="m-4 text-4xl font-bold text-center">
@@ -33,4 +34,9 @@
     Time spent working on that project
   </h2>
   <SessionsGraph />
+
+  <h2 class="w-full p-2 mb-4 text-xl border-b-2 border-current">
+    Your other projects
+  </h2>
+  <Projects />
 </div>

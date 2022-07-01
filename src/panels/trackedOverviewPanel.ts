@@ -33,7 +33,10 @@ export class TrackedOverviewPanel {
         // Enable javascript in the webview
         enableScripts: true,
         // And restrict the webview to only loading content from our extension's `media` directory.
-        localResourceRoots: [vscode.Uri.joinPath(extensionUri, "dist/public")],
+        localResourceRoots: [
+          vscode.Uri.joinPath(extensionUri, "dist/public"),
+          vscode.Uri.joinPath(extensionUri, "node_modules", "@vscode/codicons"),
+        ],
       }
     );
 
@@ -123,6 +126,15 @@ export class TrackedOverviewPanel {
         "trackedOverview.css"
       )
     );
+    const codiconsUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(
+        this._extensionUri,
+        "node_modules",
+        "@vscode/codicons",
+        "dist",
+        "codicon.css"
+      )
+    );
 
     // Use a nonce to only allow specific scripts to be run
     const nonce = getNonce();
@@ -145,6 +157,7 @@ export class TrackedOverviewPanel {
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
 				<script defer nonce="${nonce}" src="${scriptUri}"></script>
         <link rel="stylesheet" nonce="${nonce}" href="${styleUri}">
+        <link href="${codiconsUri}" rel="stylesheet" />
         <script>
           const projectsJSON = \`${JSON.stringify(projects)}\`
           const currentProjectIDbase = "${currentProjectID}"

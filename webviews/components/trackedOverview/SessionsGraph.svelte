@@ -1,10 +1,9 @@
 <script lang="ts">
   import FusionCharts from "fusioncharts";
-  import "./fusionChartVscodeTheme";
   import Timeseries from "fusioncharts/fusioncharts.timeseries";
   // @ts-ignore
   import SvelteFC, { fcRoot } from "svelte-fusioncharts";
-  import { currentProject } from "./stores";
+  import { currentProject, currentProjectID } from "./stores";
 
   fcRoot(FusionCharts, Timeseries);
 
@@ -77,5 +76,7 @@
 </script>
 
 <div id="chart-container">
-  <SvelteFC {...getChartConfig()} bind:chart />
+  {#key $currentProjectID}
+    <SvelteFC {...getChartConfig()} bind:chart />
+  {/key}
 </div>

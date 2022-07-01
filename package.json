@@ -75,6 +75,7 @@
 		"@types/vscode": "^1.63.0",
 		"@typescript-eslint/eslint-plugin": "^5.1.0",
 		"@typescript-eslint/parser": "^5.1.0",
+		"@vscode/codicons": "^0.0.31",
 		"@vscode/test-electron": "^1.6.2",
 		"@vscode/webview-ui-toolkit": "^1.0.0",
 		"concurrently": "^7.2.2",
