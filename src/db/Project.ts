@@ -91,24 +91,26 @@ export async function getProjects(ctx: vscode.ExtensionContext) {
     });
   });
 
-  return Promise.all(
-    projects.map(async (project) => {
-      const localDB = new Datastore({
-        filename: project.db,
-      });
-      await new Promise((resolve) => localDB.loadDatabase(resolve));
+  const result = [];
 
-      const sessions = await new Promise<ISession[]>((res, rej) => {
-        localDB?.find({}, (err: Error | null, docs: ISession[]) => {
-          if (err) return rej(err);
-          res(docs);
-        });
-      });
+  for await (const project of projects) {
+    const localDB = new Datastore({
+      filename: project.db,
+    });
+    await new Promise((resolve) => localDB.loadDatabase(resolve));
 
-      return {
-        project,
-        sessions,
-      };
-    })
-  );
+    const sessions = await new Promise<ISession[]>((res, rej) => {
+      localDB?.find({}, (err: Error | null, docs: ISession[]) => {
+        if (err) return rej(err);
+        res(docs);
+      });
+    });
+
+    result.push({
+      project,
+      sessions,
+    });
+  }
+
+  return result;
 }
